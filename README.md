@@ -1,5 +1,7 @@
 # LightMetrics JC400P 3D viewer
 
+[Open the live interactive 3D viewer](https://naveen100102.github.io/lightmetrics-3d-viewer/)
+
 A rotatable Three.js reconstruction of the JC400P camera shown in the supplied images. The reference product is identified through the [LightMetrics camera catalogue](https://www.lightmetrics.co/cameras) and [Jimi IoT's official JC400P product page](https://th.jimiiot.com/products/jc400p-aivision-cam.html).
 
 Jimi IoT lists device dimensions of **109 × 69 × 52 mm** and a weight of **233 g** on its product page. The reconstructed enclosure is normalized to those overall dimensions, with the cable and optional lock excluded from the enclosure measurement. Individual components, contours, and hidden surfaces are still estimated from photographs; this is not manufacturer CAD or a dimensionally validated mechanical model. The source uses **one scene unit = 30 mm**, declared in `model.userData.metersPerModelUnit`. Both the browser download and the reusable exporter convert to metres for glTF. Do not use the full cable-inclusive bounding box as the device's physical dimensions.
