@@ -55,13 +55,16 @@ try {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.copy(center);
   controls.enableDamping = true;
-  controls.enablePan = false;
+  controls.enablePan = true;
+  controls.screenSpacePanning = true;
+  host.setAttribute('aria-label', 'Interactive 3D camera. Drag to rotate, right-drag or Shift-drag to move, scroll to zoom, or use arrow keys. On touch screens, use two fingers to move and pinch to zoom.');
+  document.querySelector('.orbit-hint').textContent = 'DRAG TO ROTATE · RIGHT-DRAG / SHIFT-DRAG TO MOVE · SCROLL TO ZOOM';
   controls.autoRotateSpeed = 0.55;
   controls.minPolarAngle = 0.01;
   controls.maxPolarAngle = Math.PI - 0.01;
 
   const views = {
-    perspective: new THREE.Vector3(6, -8, 6).normalize(),
+    perspective: new THREE.Vector3(0.7, -9, 10).normalize(),
     front: new THREE.Vector3(0, -1, 0.85).normalize(),
     side: new THREE.Vector3(1, 0, 0),
     panel: new THREE.Vector3(8, -10, 9).normalize(),
@@ -74,7 +77,7 @@ try {
 
   // Fit all eight corners, including the cable, to the available canvas.
   // Resizing retains the user's viewing direction and relative zoom.
-  function frameModel(direction, relativeZoom = 1) {
+  function frameModel(direction, relativeZoom = 1, panOffset = new THREE.Vector3()) {
     const focusCenter = activeBounds.getCenter(new THREE.Vector3());
     const verticalTangent = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     const horizontalTangent = verticalTangent * camera.aspect;
@@ -97,6 +100,7 @@ try {
     fittedDistance = Math.max(distance, 2);
     controls.minDistance = fittedDistance * 0.42;
     controls.maxDistance = fittedDistance * 2.5;
+    focusCenter.add(panOffset);
     controls.target.copy(focusCenter);
     camera.position.copy(focusCenter).addScaledVector(direction, fittedDistance * relativeZoom);
     camera.lookAt(focusCenter);
@@ -107,12 +111,13 @@ try {
     const { width, height } = host.getBoundingClientRect();
     if (width <= 0 || height <= 0) return;
     const offset = camera.position.clone().sub(controls.target);
+    const panOffset = controls.target.clone().sub(activeBounds.getCenter(new THREE.Vector3()));
     const zoom = hasFramed ? offset.length() / fittedDistance : 1;
     renderer.setSize(width, height);
     camera.aspect = width / height;
     camera.setFocalLength(55);
     camera.updateProjectionMatrix();
-    frameModel(offset.normalize(), THREE.MathUtils.clamp(zoom, 0.42, 2.5));
+    frameModel(offset.normalize(), THREE.MathUtils.clamp(zoom, 0.42, 2.5), panOffset);
     hasFramed = true;
   }
   new ResizeObserver(resize).observe(host);
@@ -143,7 +148,7 @@ try {
       controls.enableDamping = false;
       controls.update();
       activeBounds = button.dataset.view === 'panel' ? panelBounds : bounds;
-      frameModel(views[button.dataset.view]);
+      frameModel(views[button.dataset.view], button.dataset.view === 'perspective' ? 1.18 : 1);
       selectedView = button.dataset.view;
       const referenceFile = selectedView === 'perspective' && document.querySelector('#lock').getAttribute('aria-pressed') === 'true' ? 'jc400p-official-1.png' : referenceSources[selectedView];
       referenceImage.src = new URL(`reference/${referenceFile}`, document.baseURI).href;
@@ -225,7 +230,7 @@ try {
   });
 
   const requestedView = new URLSearchParams(window.location.search).get('view');
-  viewButtons.find(button => button.dataset.view === requestedView)?.click();
+  (viewButtons.find(button => button.dataset.view === requestedView) || viewButtons[0]).click();
 
   const clock = new THREE.Clock();
   renderer.setAnimationLoop(() => {

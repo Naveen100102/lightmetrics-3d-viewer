@@ -29,6 +29,7 @@ npm run build -- --base=/camera-viewer/
 ## Controls
 
 - Drag with the mouse or one finger to rotate through 360°.
+- Right-drag or Shift-drag to move the model around the view. On touch screens, move with two fingers. Reset or choose a preset to center it again.
 - Scroll or pinch to zoom.
 - Choose **Reference angle**, **Lens**, **Side**, **Panel detail**, or **Back** for preset views. The original product image alongside the viewer changes to support comparison.
 - Use **Panel detail** for a close view of the reference-traced right grille, card mouths, and fasteners.
