@@ -1,0 +1,902 @@
+[
+  {
+    "title": "Interactive 3D\nfor websites",
+    "lead": "A practical guide for designers, motion designers, 3D artists and developers",
+    "rows": [],
+    "notes": "A shared vocabulary and a practical production guide. Read the core slides first. The final examples are optional developer detail. Research checked on 9 October 2026. Recommendations reflect the needs of a branded product website, not a universal ranking.",
+    "sources": [],
+    "type": "cover"
+  },
+  {
+    "title": "The questions this guide answers",
+    "lead": "The experience comes first. The tools follow.",
+    "rows": [
+      [
+        "01  Understand",
+        "What makes a website genuinely interactive in 3D?"
+      ],
+      [
+        "02  Compare",
+        "Where do Blender, Three.js and WebGL fit?"
+      ],
+      [
+        "03  Produce",
+        "How do assets, motion and code reach a live site?"
+      ],
+      [
+        "04  Choose",
+        "Which approach fits your team and your project?"
+      ]
+    ],
+    "notes": "Suggested audience route: everyone reads slides 1–10. Designers focus on 11–18 and 21–25. Artists and motion designers focus on 6–8 and 19–23. Developers also use the code appendix. No prior graphics programming knowledge is assumed.",
+    "sources": []
+  },
+  {
+    "title": "What interactive 3D adds",
+    "lead": "The visitor changes the view or the scene while the browser draws it.",
+    "rows": [
+      [
+        "Product viewer",
+        "Rotate, zoom and inspect a camera from multiple angles."
+      ],
+      [
+        "Configurator",
+        "Change a material, finish or accessory and see the result."
+      ],
+      [
+        "Guided story",
+        "Reveal a feature through controlled camera movement."
+      ],
+      [
+        "Simulation / game",
+        "Explore a space and respond to objects or rules."
+      ]
+    ],
+    "notes": "These are experience categories, not automatic features of every library. A 360-degree photo sequence only reveals captured views. A geometric 3D scene can show intermediate viewpoints if the model contains those surfaces.",
+    "sources": [
+      "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://modelviewer.dev/"
+    ]
+  },
+  {
+    "title": "The five layers of a 3D website",
+    "lead": "Each layer solves a different part of the problem.",
+    "rows": [
+      [
+        "Create the asset",
+        "Blender",
+        "Shape, materials and animation"
+      ],
+      [
+        "Deliver the asset",
+        "glTF / GLB",
+        "Portable scene and model data"
+      ],
+      [
+        "Run the experience",
+        "Three.js / viewer / engine",
+        "Loading, camera and interaction"
+      ],
+      [
+        "Draw on the device",
+        "WebGL / WebGPU",
+        "Browser access to the GPU"
+      ],
+      [
+        "Present the page",
+        "HTML / CSS / Webflow / React",
+        "Text, navigation and accessible controls"
+      ]
+    ],
+    "notes": "Read this table from top to bottom. Blender is an authoring application. Three.js is a JavaScript library. WebGL is a browser graphics API. They can work together in a single project. React is optional. A browser engine still needs an HTML page and asset hosting.",
+    "sources": [
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
+      "https://www.khronos.org/gltf/",
+      "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API"
+    ],
+    "headers": [
+      "Layer",
+      "Examples",
+      "Responsibility"
+    ]
+  },
+  {
+    "title": "A small 3D vocabulary",
+    "lead": "Six terms explain most conversations between design and development.",
+    "rows": [
+      [
+        "Mesh",
+        "The object’s shape, usually made from triangles."
+      ],
+      [
+        "Material",
+        "Rules for how a surface reflects or transmits light."
+      ],
+      [
+        "Texture",
+        "An image that adds color or surface information."
+      ],
+      [
+        "Camera",
+        "The viewpoint and lens used to see the scene."
+      ],
+      [
+        "Scene",
+        "The collection of objects, cameras and lights."
+      ],
+      [
+        "Render",
+        "Calculate the final image visible on the screen."
+      ]
+    ],
+    "notes": "A mesh combines geometry with a material. A normal map can suggest fine surface relief without adding geometry, but does not repair the silhouette. A shader is a program used in rendering to calculate positions or colors. The GPU is the device processor specialized for parallel graphics work.",
+    "sources": [
+      "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API"
+    ]
+  },
+  {
+    "title": "Blender creates the source asset",
+    "lead": "Best fit: detailed modeling, material preparation and authored animation.",
+    "rows": [
+      [
+        "How it works",
+        "An artist edits geometry, UVs, materials and keyframes in a desktop scene."
+      ],
+      [
+        "Website handoff",
+        "Export a web-ready GLB, then load it with a viewer or engine."
+      ],
+      [
+        "What to watch",
+        "Check export compatibility. Complex materials and simulations may need baking."
+      ]
+    ],
+    "notes": "UVs describe where a texture sits on the model. Baking converts a complex result into simpler textures or sampled animation. Keep an editable source file as well as the exported asset. The browser does not load a .blend scene directly through a standard GLB loader. Recommendation: use Blender to refine the product’s geometry before adjusting web lighting.",
+    "sources": [
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html"
+    ],
+    "type": "split",
+    "image": "public/reference/jc400p-official-1.png",
+    "caption": "Camera reference used in this project"
+  },
+  {
+    "title": "GLB is the handoff file",
+    "lead": "A practical delivery format for models on the web.",
+    "rows": [
+      [
+        ".blend",
+        "Editable Blender project",
+        "Keep for future art changes"
+      ],
+      [
+        ".gltf",
+        "Scene description with referenced resources",
+        "Useful for inspecting separate assets"
+      ],
+      [
+        ".glb",
+        "Binary glTF container",
+        "Often packages a model into one file"
+      ],
+      [
+        ".fbx / .obj",
+        "Interchange formats",
+        "Usually convert before web delivery"
+      ]
+    ],
+    "notes": "glTF is an open runtime asset delivery specification. GLB is its binary container. A GLB can include geometry and textures, but check whether an export references external resources. glTF supports selected material and animation features, not every feature of a digital content creation tool. A file extension alone does not guarantee low size or fast rendering.",
+    "sources": [
+      "https://www.khronos.org/gltf/"
+    ],
+    "headers": [
+      "Format",
+      "Purpose",
+      "Website workflow"
+    ]
+  },
+  {
+    "title": "The asset preparation workflow",
+    "lead": "A clean export makes the website easier to build and maintain.",
+    "rows": [
+      [
+        "01  Match",
+        "Check silhouette, dimensions and visible product details against references."
+      ],
+      [
+        "02  Prepare",
+        "Use clear part names, sensible pivots and consistent scale."
+      ],
+      [
+        "03  Simplify",
+        "Remove hidden geometry and use textures for very fine details."
+      ],
+      [
+        "04  Export",
+        "Export GLB and reopen it in the target web viewer."
+      ],
+      [
+        "05  Approve",
+        "Review front, side and rear views under the final lighting."
+      ]
+    ],
+    "notes": "This is a recommended production workflow. An artist should preserve features needed for interaction, such as a separately selectable lens or removable cover. Compression can reduce transfer size but has decoding cost and may require loader support. Keep the original uncompressed source. Recheck material appearance after conversion.",
+    "sources": [
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
+      "https://threejs.org/docs/pages/GLTFLoader.html",
+      "https://www.khronos.org/gltf/"
+    ]
+  },
+  {
+    "title": "WebGL draws through the GPU",
+    "lead": "Best fit: graphics foundations and specialized low-level rendering.",
+    "rows": [
+      [
+        "Input",
+        "JavaScript sends geometry, textures and rendering instructions."
+      ],
+      [
+        "Processing",
+        "Shaders transform vertices and calculate pixel appearance."
+      ],
+      [
+        "Output",
+        "The GPU produces an image in an HTML canvas."
+      ],
+      [
+        "Tradeoff",
+        "Direct WebGL gives control, with substantial setup and graphics code."
+      ]
+    ],
+    "notes": "WebGL is a browser API, not a modeling application or a ready-made viewer. Libraries usually handle its buffers, shader programs and drawing calls. Learn direct WebGL when you need graphics-engine expertise or a specialized renderer. For a conventional product viewer, a higher-level library is normally easier to maintain. WebGL availability depends on browser and hardware support.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API"
+    ]
+  },
+  {
+    "title": "Three.js builds the live scene",
+    "lead": "Best fit: a custom product viewer or a distinctive interactive website.",
+    "rows": [
+      [
+        "Scene + camera",
+        "Place the object and choose the initial product view."
+      ],
+      [
+        "Materials + lighting",
+        "Define how the model looks in the browser."
+      ],
+      [
+        "Controls + events",
+        "Connect drag, zoom, buttons and object selection."
+      ],
+      [
+        "Renderer",
+        "Draw the scene after changes or during animation."
+      ]
+    ],
+    "notes": "Three.js exposes reusable scene, camera, mesh, material and renderer objects. A developer combines them into the desired experience. Loading and control helpers reduce setup, but accessibility, error states and page behavior remain project work. Libraries do not automatically recreate a product accurately from its photograph.",
+    "sources": [
+      "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://threejs.org/docs/pages/GLTFLoader.html",
+      "https://threejs.org/docs/pages/OrbitControls.html"
+    ]
+  },
+  {
+    "title": "The main options at a glance",
+    "lead": "Choose by the experience and the team that will maintain it.",
+    "rows": [
+      [
+        "model-viewer",
+        "Product display and optional AR",
+        "Low to moderate"
+      ],
+      [
+        "Spline",
+        "Visual web scenes and motion",
+        "Low to moderate"
+      ],
+      [
+        "Three.js",
+        "Custom viewer and interaction",
+        "Moderate to high"
+      ],
+      [
+        "React Three Fiber",
+        "3D inside a React application",
+        "React + Three.js skills"
+      ],
+      [
+        "Babylon.js / PlayCanvas",
+        "Richer applications and game-like scenes",
+        "Moderate to high"
+      ],
+      [
+        "Direct WebGL / WebGPU",
+        "Specialized rendering systems",
+        "High"
+      ]
+    ],
+    "notes": "Effort is a qualitative recommendation, not a measured benchmark. Asset complexity and interaction requirements can dominate the work. A simple embed still needs optimized content, mobile testing and a fallback. Blender complements all these choices as an asset authoring tool.",
+    "sources": [
+      "https://modelviewer.dev/",
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://r3f.docs.pmnd.rs/getting-started/introduction",
+      "https://www.babylonjs.com/",
+      "https://developer.playcanvas.com/user-manual/editor/",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API"
+    ],
+    "headers": [
+      "Option",
+      "Strong starting point",
+      "Engineering effort"
+    ]
+  },
+  {
+    "title": "model-viewer: a focused product embed",
+    "lead": "Best fit: one product with camera controls, hotspots or an AR entry point.",
+    "rows": [
+      [
+        "How it works",
+        "A web component loads a model and supplies viewer behavior."
+      ],
+      [
+        "How to publish",
+        "Load the component script, add a <model-viewer> element and set its src."
+      ],
+      [
+        "Choose it when",
+        "The requirements fit a standard product presentation."
+      ],
+      [
+        "Check first",
+        "Custom interactions and AR support vary by feature and device."
+      ]
+    ],
+    "notes": "A web component is a reusable HTML element with built-in behavior. model-viewer accepts glTF/GLB. It can expose product annotations and animation controls. AR may use WebXR, Scene Viewer or Quick Look depending on configuration and device. Verify the exact product flow on the target phones rather than assuming every AR mode works everywhere.",
+    "sources": [
+      "https://modelviewer.dev/",
+      "https://modelviewer.dev/docs/"
+    ]
+  },
+  {
+    "title": "Spline: visual scene design",
+    "lead": "Best fit: designers exploring interactive brand graphics and page motion.",
+    "rows": [
+      [
+        "Create",
+        "Arrange objects and build interactions in a visual editor."
+      ],
+      [
+        "Publish",
+        "Export a Spline Viewer embed or another supported web export."
+      ],
+      [
+        "Connect",
+        "Use configured pointer or scroll events to relate the scene to the page."
+      ],
+      [
+        "Evaluate",
+        "Check export rights, hosting requirements and current plan limits."
+      ]
+    ],
+    "notes": "Spline Viewer is an HTML web component. A public-URL iframe isolates interactions within its frame, while the viewer can support page-level events. This makes Spline useful for design-led exploration. For exact product modeling, evaluate the required modeling workflow and source assets. Pricing and branding restrictions change, so this deck deliberately avoids fixed subscription claims.",
+    "sources": [
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer"
+    ]
+  },
+  {
+    "title": "React Three Fiber: Three.js in React",
+    "lead": "Best fit: a React site where 3D responds to application state.",
+    "rows": [
+      [
+        "How it works",
+        "React components describe a Three.js scene."
+      ],
+      [
+        "Typical use",
+        "A configurator links selected options to model materials or parts."
+      ],
+      [
+        "Developer advantage",
+        "Reusable scene components fit an existing React codebase."
+      ],
+      [
+        "Learning requirement",
+        "The team still needs Three.js and 3D fundamentals."
+      ]
+    ],
+    "notes": "React Three Fiber is a React renderer for Three.js. It changes how scenes are authored and composed. It does not create the source model and does not make scene optimization unnecessary. Match compatible React, Fiber and Three.js versions. Prefer plain Three.js if introducing React would add complexity to a small existing non-React viewer.",
+    "sources": [
+      "https://r3f.docs.pmnd.rs/getting-started/introduction"
+    ]
+  },
+  {
+    "title": "Babylon.js and PlayCanvas",
+    "lead": "Best fit: applications that need more than a product turntable.",
+    "rows": [
+      [
+        "Babylon.js",
+        "An engine with tools for rendering and application features.",
+        "Consider for complex interactive scenes, XR or game-like behavior."
+      ],
+      [
+        "PlayCanvas",
+        "A web engine with a browser-based scene editor.",
+        "Consider when artists and developers need a shared visual workflow."
+      ]
+    ],
+    "notes": "Both can also build product viewers. Their appeal grows when the project needs richer scene management, animation or game-style capabilities. PlayCanvas offers editor workflows and publishing options. Babylon.js provides a broad engine and debugging tools. Prototype the hardest requirement in each shortlisted engine before committing. The best choice depends on team expertise and required features.",
+    "sources": [
+      "https://www.babylonjs.com/",
+      "https://developer.playcanvas.com/user-manual/editor/"
+    ],
+    "headers": [
+      "Tool",
+      "How it works",
+      "When to explore it"
+    ]
+  },
+  {
+    "title": "WebGPU: a newer graphics foundation",
+    "lead": "Best fit: advanced rendering or compute workloads with tested device support.",
+    "rows": [
+      [
+        "What it adds",
+        "A modern browser API for GPU rendering and general-purpose GPU compute."
+      ],
+      [
+        "How teams use it",
+        "Through a supporting engine, or through a custom graphics pipeline."
+      ],
+      [
+        "Three.js route",
+        "WebGPURenderer can use a WebGPU backend with a WebGL 2 fallback."
+      ],
+      [
+        "Decision rule",
+        "Verify features and performance on real target devices before switching."
+      ]
+    ],
+    "notes": "WebGPU requires a secure context and availability varies across browsers, operating systems and devices. Faster performance is not automatic. The Three.js renderer documentation notes differences in features and workload performance relative to WebGLRenderer. Existing custom shader code may need adaptation. Use a static fallback if the chosen rendering path cannot initialize.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API",
+      "https://threejs.org/manual/pages/webgpurenderer"
+    ]
+  },
+  {
+    "title": "Other useful approaches",
+    "lead": "The desired visitor action determines whether real-time 3D is necessary.",
+    "rows": [
+      [
+        "Video / rendered animation",
+        "A fixed story with a carefully controlled look",
+        "Visitors cannot choose arbitrary angles"
+      ],
+      [
+        "360° image sequence",
+        "Spin through photographed or rendered views",
+        "Limited to captured viewpoints"
+      ],
+      [
+        "CSS 3D transforms",
+        "Tilt or rotate page elements",
+        "No general mesh-based product rendering"
+      ],
+      [
+        "WebXR",
+        "Immersive AR or VR on supported devices",
+        "Extra compatibility and interaction testing"
+      ]
+    ],
+    "notes": "Recommendations: a video can be appropriate for a purely cinematic sequence. A photo spin can preserve photographed appearance when suitable source views exist. CSS perspective is useful for interface elements. WebXR is an API for immersive experiences rather than an asset authoring tool. For WebXR, check HTTPS, permissions and device capabilities.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API/Permissions_and_security",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API"
+    ],
+    "headers": [
+      "Approach",
+      "Useful for",
+      "Limitation"
+    ]
+  },
+  {
+    "title": "Choosing by project",
+    "lead": "These are recommended starting points, not universal winners.",
+    "rows": [
+      [
+        "Simple product viewer",
+        "model-viewer",
+        "Small integration surface"
+      ],
+      [
+        "Custom product viewer",
+        "Three.js",
+        "Direct control over the experience"
+      ],
+      [
+        "React configurator",
+        "React Three Fiber",
+        "Scene behavior follows app state"
+      ],
+      [
+        "Interactive hero",
+        "Spline",
+        "Visual iteration and web embeds"
+      ],
+      [
+        "Room or simulation",
+        "Babylon.js / PlayCanvas",
+        "Broader application workflows"
+      ],
+      [
+        "Cinematic sequence",
+        "Rendered video",
+        "Predictable art direction"
+      ]
+    ],
+    "notes": "This is a synthesis of the documented capabilities and typical production needs. It is not a benchmark or feature ranking. Validate asset requirements, accessibility, maintenance, hosting and target-device performance before final selection.",
+    "sources": [
+      "https://modelviewer.dev/",
+      "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://r3f.docs.pmnd.rs/getting-started/introduction",
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://www.babylonjs.com/",
+      "https://developer.playcanvas.com/user-manual/editor/"
+    ],
+    "headers": [
+      "Project",
+      "Starting point",
+      "Reason"
+    ]
+  },
+  {
+    "title": "Motion design for live interaction",
+    "lead": "The visitor can interrupt, reverse or repeat the motion.",
+    "rows": [
+      [
+        "Authored animation",
+        "Create named clips such as OpenCover or RevealLens."
+      ],
+      [
+        "Procedural motion",
+        "Use code for hover responses, camera moves or product rotation."
+      ],
+      [
+        "Scroll behavior",
+        "Map scroll progress to a camera or animation state when useful."
+      ],
+      [
+        "Accessible behavior",
+        "Provide pause or reduced motion and preserve normal page navigation."
+      ]
+    ],
+    "notes": "Exported glTF animation commonly includes transforms, skeletal motion and morph targets. Check unsupported animated properties and bake where appropriate. Specify triggers, duration, easing, interruption behavior and end states in the handoff. A useful rule is one clear purpose per movement. Reduced-motion users should still receive the same product information.",
+    "sources": [
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://threejs.org/docs/pages/OrbitControls.html"
+    ]
+  },
+  {
+    "title": "A clear handoff between disciplines",
+    "lead": "Everyone owns a different part of the final experience.",
+    "rows": [
+      [
+        "Designer",
+        "Layout, initial view, controls and fallback states",
+        "Interaction specification"
+      ],
+      [
+        "Motion designer",
+        "Timing, transitions and interruption behavior",
+        "Motion reference + state notes"
+      ],
+      [
+        "3D artist",
+        "Geometry, materials, pivots and animation clips",
+        "Source scene + approved GLB"
+      ],
+      [
+        "Developer",
+        "Loading, interaction, accessibility and deployment",
+        "Tested website implementation"
+      ]
+    ],
+    "notes": "Recommended collaboration model. Review together at the GLB stage and again in the live viewer. Include part names, model scale, preferred camera angle and any approved material variants. Keep screenshots of approved views to prevent the look drifting during optimization.",
+    "sources": [],
+    "headers": [
+      "Role",
+      "Ownership",
+      "Handoff"
+    ]
+  },
+  {
+    "title": "What makes a product look accurate",
+    "lead": "Geometry and presentation both contribute to perceived quality.",
+    "rows": [
+      [
+        "Shape",
+        "Silhouette, proportions, openings and part placement."
+      ],
+      [
+        "Surface",
+        "Roughness, metalness, lens appearance and fine texture."
+      ],
+      [
+        "Presentation",
+        "Lighting, reflections, camera lens and exposure."
+      ]
+    ],
+    "notes": "Project lesson: a beautiful render of the wrong shape still misrepresents the product. A few images cannot reveal hidden surfaces or exact dimensions. Reference-based reconstruction requires assumptions. For higher fidelity, request additional orthographic views, measurements or CAD when available. This is a practical inference from image-based modeling, not a claim that an image uniquely determines geometry.",
+    "sources": [],
+    "type": "split",
+    "image": "public/reference/jc400p-official-3.png",
+    "caption": "Product reference: shape and detail review"
+  },
+  {
+    "title": "Performance is a design constraint",
+    "lead": "A useful viewer loads promptly and stays responsive on target phones.",
+    "rows": [
+      [
+        "Delivery",
+        "Measure model, texture and JavaScript download size."
+      ],
+      [
+        "Rendering",
+        "Watch draw calls, pixel resolution, shadows and transparent layers."
+      ],
+      [
+        "Optimization",
+        "Compress assets, simplify unseen detail and limit unnecessary effects."
+      ],
+      [
+        "Measurement",
+        "Test loading, interaction smoothness and memory on real devices."
+      ]
+    ],
+    "notes": "Set a budget based on the actual audience and devices. There is no universal polygon or megabyte limit that guarantees success. GPU texture memory can be much larger than the compressed download. Reusing geometry and materials can reduce overhead. Consider rendering only when the scene changes, and pause animation when it is offscreen.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices"
+    ]
+  },
+  {
+    "title": "The complete viewer experience",
+    "lead": "The page must work before, during and after the 3D scene loads.",
+    "rows": [
+      [
+        "Before loading",
+        "Show a useful poster image and readable product information."
+      ],
+      [
+        "While loading",
+        "Provide progress or a clear loading state."
+      ],
+      [
+        "During interaction",
+        "Explain rotate, pan and zoom. Offer a reset view action."
+      ],
+      [
+        "When unavailable",
+        "Keep a static image and an understandable retry or fallback."
+      ],
+      [
+        "For every visitor",
+        "Use labeled HTML controls, keyboard access and reduced motion."
+      ]
+    ],
+    "notes": "A canvas alone does not expose the product information as ordinary accessible page content. Keep important descriptions in HTML. Avoid trapping touch scrolling. Test pointer, keyboard and touch separately. Keyboard and motion accessibility are implementation responsibilities even when a library supplies basic camera controls.",
+    "sources": [
+      "https://modelviewer.dev/docs/",
+      "https://threejs.org/docs/pages/OrbitControls.html",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices"
+    ]
+  },
+  {
+    "title": "Publishing on Webflow or any website",
+    "lead": "Host the viewer assets, then connect them to the page.",
+    "rows": [
+      [
+        "Embed a component",
+        "Use model-viewer or Spline Viewer inside the page."
+      ],
+      [
+        "Embed an iframe",
+        "Host a complete viewer separately and point an iframe at its URL."
+      ],
+      [
+        "Integrate JavaScript",
+        "Mount Three.js directly for deeper page and UI integration."
+      ],
+      [
+        "Test the published page",
+        "Check asset paths, HTTPS, sizing, cross-origin rules and mobile controls."
+      ]
+    ],
+    "notes": "An iframe is often the simplest way to isolate an existing viewer. Direct integration gives closer access to page state and layout. Webflow supports custom HTML, CSS and JavaScript embeds subject to its product capabilities. Some code needs the published page to behave fully. Do not embed localhost in a public site. Use the deployed HTTPS viewer URL.",
+    "sources": [
+      "https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed",
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://modelviewer.dev/docs/"
+    ]
+  },
+  {
+    "title": "Your LightMetrics camera viewer",
+    "lead": "Recommended route: keep Three.js and refine the source asset.",
+    "rows": [
+      [
+        "Current implementation",
+        "A procedural Three.js model with OrbitControls and a GLB export path."
+      ],
+      [
+        "Art improvement",
+        "Refine the body and side grille against the supplied product references."
+      ],
+      [
+        "Web improvement",
+        "Keep rotate, pan, zoom and reset controls in the LightMetrics theme."
+      ]
+    ],
+    "notes": "Local source reviewed: src/main.js imports createCameraModel from model.js, constructs the scene and uses OrbitControls. It imports GLTFExporter for download. This deck does not claim the current model was authored in Blender or exactly matches the product. Proposed next phase: approve the refined GLB in the existing viewer before replacing production assets. Screenshot is the project’s saved initial-view capture.",
+    "sources": [],
+    "type": "split",
+    "image": "artifacts/initial-view.jpg",
+    "caption": "Existing project capture, not a new implementation"
+  },
+  {
+    "title": "A practical learning path",
+    "lead": "Each discipline can begin with a small, shared product example.",
+    "rows": [
+      [
+        "Beginner",
+        "Load a sample GLB, rotate it and learn the six basic terms."
+      ],
+      [
+        "Designer",
+        "Specify initial view, control behavior and a mobile fallback."
+      ],
+      [
+        "Artist / motion designer",
+        "Export one model and one animation clip. Compare the browser result."
+      ],
+      [
+        "Developer",
+        "Build loading and error states, connect controls and measure performance."
+      ],
+      [
+        "Intermediate team",
+        "Add one hotspot or variant, then test with real users and devices."
+      ]
+    ],
+    "notes": "Suggested practice sequence rather than a fixed training schedule. Avoid starting with a large scene or many effects. A shared reference model makes disagreements about geometry, lighting and interaction easier to identify. The code appendix shows minimal integration patterns, not complete production applications.",
+    "sources": []
+  },
+  {
+    "title": "Example: a simple product embed",
+    "lead": "For developers and designers working with custom HTML.",
+    "rows": [],
+    "notes": "Install and bundle @google/model-viewer, or load a version-pinned module URL following the official quick-start instructions. The /models and /images paths below must exist on the published host. Give the element a visible CSS size. This illustrative fragment assumes the component has already been registered. AR is deliberately omitted so the example focuses on browser viewing.",
+    "sources": [
+      "https://modelviewer.dev/docs/"
+    ],
+    "type": "code",
+    "code": "<!-- After loading the model-viewer module -->\n<model-viewer\n  src=\"/models/camera.glb\"\n  poster=\"/images/camera.webp\"\n  alt=\"Interactive view of the camera\"\n  camera-controls\n  touch-action=\"pan-y\"\n  style=\"width:100%; height:480px\">\n</model-viewer>",
+    "bottom": "The component handles the viewer. Your page still supplies layout, content and fallback behavior."
+  },
+  {
+    "title": "Example: loading a GLB in Three.js",
+    "lead": "A small fragment inside an initialized Three.js scene.",
+    "rows": [],
+    "notes": "Assumptions: a renderer, scene and camera already exist, and suitable lighting is configured. The camera must frame the model at its real scale. This fragment is illustrative and has not been packaged as a runnable app. Production work also needs resizing, loading state, cleanup and accessibility. For a static scene, use an on-demand rendering strategy if appropriate.",
+    "sources": [
+      "https://threejs.org/docs/pages/GLTFLoader.html",
+      "https://threejs.org/docs/pages/OrbitControls.html"
+    ],
+    "type": "code",
+    "code": "import { GLTFLoader } from\n  \"three/addons/loaders/GLTFLoader.js\";\nimport { OrbitControls } from\n  \"three/addons/controls/OrbitControls.js\";\n\nconst controls = new OrbitControls(camera, renderer.domElement);\ncontrols.enablePan = true;\nnew GLTFLoader().load(\"/models/camera.glb\",\n  gltf => scene.add(gltf.scene),\n  undefined, error => console.error(\"Model failed\", error));\nrenderer.setAnimationLoop(() => {\n  controls.update();\n  renderer.render(scene, camera);\n});",
+    "bottom": "Model loading, camera framing and material lighting are separate responsibilities."
+  },
+  {
+    "title": "Example: embedding a hosted viewer",
+    "lead": "An iframe can reuse a complete viewer across multiple pages.",
+    "rows": [],
+    "notes": "Replace the example URL with the real deployed viewer URL. Use a dedicated viewer layout if the hosted page includes its own header or surrounding content. Fullscreen permission does not grant WebXR permissions. If immersive AR is required, review the appropriate permission policy separately. Check that hosting headers permit embedding.",
+    "sources": [
+      "https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API/Permissions_and_security"
+    ],
+    "type": "code",
+    "code": "<iframe\n  src=\"https://your-domain.example/viewer/\"\n  title=\"Interactive camera product viewer\"\n  loading=\"lazy\"\n  allow=\"fullscreen\"\n  style=\"width:100%; height:640px; border:0\">\n</iframe>",
+    "bottom": "Use a public HTTPS URL for deployment. localhost works only on your own machine."
+  },
+  {
+    "title": "Official resources: assets and rendering",
+    "lead": "A starting library for continued learning.",
+    "rows": [
+      [
+        "Blender glTF export",
+        "docs.blender.org / glTF 2.0"
+      ],
+      [
+        "glTF resources",
+        "khronos.org/gltf"
+      ],
+      [
+        "Three.js fundamentals",
+        "threejs.org / creating a scene"
+      ],
+      [
+        "Loading and controls",
+        "GLTFLoader and OrbitControls documentation"
+      ],
+      [
+        "Browser graphics",
+        "MDN WebGL API and WebGPU API"
+      ]
+    ],
+    "notes": "Direct links:\nhttps://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html\nhttps://www.khronos.org/gltf/\nhttps://threejs.org/manual/pages/creating-a-scene.html\nhttps://threejs.org/docs/pages/GLTFLoader.html\nhttps://threejs.org/docs/pages/OrbitControls.html\nhttps://developer.mozilla.org/en-US/docs/Web/API/WebGL_API\nhttps://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API\nhttps://threejs.org/manual/pages/webgpurenderer\nhttps://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices",
+    "sources": [
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
+      "https://www.khronos.org/gltf/",
+      "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API"
+    ]
+  },
+  {
+    "title": "Official resources: viewers and publishing",
+    "lead": "Use the documentation for the versions you actually deploy.",
+    "rows": [
+      [
+        "Product viewer",
+        "modelviewer.dev"
+      ],
+      [
+        "Visual authoring",
+        "Spline Viewer documentation"
+      ],
+      [
+        "React integration",
+        "r3f.docs.pmnd.rs"
+      ],
+      [
+        "Application engines",
+        "babylonjs.com and developer.playcanvas.com"
+      ],
+      [
+        "Website embedding",
+        "Webflow Custom code embed guide"
+      ]
+    ],
+    "notes": "Direct links:\nhttps://modelviewer.dev/\nhttps://modelviewer.dev/docs/\nhttps://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer\nhttps://r3f.docs.pmnd.rs/getting-started/introduction\nhttps://www.babylonjs.com/\nhttps://developer.playcanvas.com/user-manual/editor/\nhttps://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed\nhttps://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API/Permissions_and_security\nResearch checked 9 October 2026. Browser support, pricing and export capabilities may change.",
+    "sources": [
+      "https://modelviewer.dev/",
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://r3f.docs.pmnd.rs/getting-started/introduction",
+      "https://www.babylonjs.com/",
+      "https://developer.playcanvas.com/user-manual/editor/",
+      "https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed"
+    ]
+  },
+  {
+    "title": "The recommended starting point",
+    "lead": "One approved model. One useful interaction. One tested website.",
+    "rows": [
+      [
+        "For LightMetrics",
+        "Refine the camera asset, then keep the existing Three.js viewer."
+      ],
+      [
+        "For a simple new product embed",
+        "Try model-viewer before building custom infrastructure."
+      ],
+      [
+        "For more ambitious experiences",
+        "Select the engine after prototyping the hardest interaction."
+      ]
+    ],
+    "notes": "Recommendations are tailored to the project and the comparisons in this guide. The final choice should account for maintainers, device support and the required interaction. Accurate geometry and a considerate user experience matter more than adding effects.",
+    "sources": [],
+    "dark": true
+  }
+]
