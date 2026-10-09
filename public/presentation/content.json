@@ -1,139 +1,40 @@
 [
   {
-    "title": "Interactive 3D\nfor websites",
-    "lead": "The tools, how they work and when to use them",
-    "rows": [],
-    "type": "cover",
-    "notes": "20 seconds. Today we will look at how interactive 3D reaches a website, where Blender, Three.js and WebGL fit, and how to choose a practical starting point. Total suggested presentation time: about 7 minutes.",
+    "title": "3D on the web",
+    "notes": "25 seconds. This talk explains the production decisions behind a useful 3D website. We will use a product viewer as the example, but the same layers apply to interactive brand scenes and applications. The focus is on tool roles, tradeoffs and the handoff. Suggested total time: roughly eight minutes.",
     "sources": []
   },
   {
-    "title": "What visitors can do",
-    "lead": "The browser updates the scene as the visitor interacts.",
-    "rows": [
-      [
-        "Explore",
-        "Rotate and zoom to see a product from different angles."
-      ],
-      [
-        "Customize",
-        "Change a finish, material or accessory."
-      ],
-      [
-        "Discover",
-        "Click a feature or follow a guided animation."
-      ]
-    ],
-    "notes": "30 seconds. Imagine buying a camera online. You can inspect the lens, turn the camera around and select a feature to learn more. These actions make 3D useful. A fixed video is still a good choice when viewers only need to watch a story.",
-    "sources": [
-      "https://modelviewer.dev/",
-      "https://threejs.org/manual/pages/creating-a-scene.html"
-    ]
-  },
-  {
-    "title": "How the tools work together",
-    "lead": "Each tool has a different job in the same workflow.",
-    "headers": [
-      "Stage",
-      "Tool or format",
-      "Job"
-    ],
-    "rows": [
-      [
-        "Create",
-        "Blender",
-        "Build the model and animation"
-      ],
-      [
-        "Export",
-        "GLB",
-        "Package the asset for delivery"
-      ],
-      [
-        "Interact",
-        "Three.js or a viewer",
-        "Load the model and handle controls"
-      ],
-      [
-        "Render",
-        "WebGL / WebGPU",
-        "Use the device’s GPU to draw it"
-      ]
-    ],
-    "notes": "45 seconds. Blender is the workshop, GLB is the delivery file, and Three.js organizes the live experience. WebGL or WebGPU connects browser rendering to the graphics processor. HTML and CSS provide the surrounding page. These technologies complement each other.",
+    "title": "The stack, explained",
+    "notes": "45 seconds. The tools belong to different layers. Blender is the authoring workspace. GLB packages geometry, materials and supported animation for delivery. Three.js, a component or an engine loads the content and manages interaction. WebGL or WebGPU draws through the device GPU. HTML and CSS surround the canvas with readable content and accessible controls. A source file and a delivery file serve different purposes.",
     "sources": [
       "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
       "https://www.khronos.org/gltf/",
+      "https://threejs.org/manual/pages/creating-a-scene.html",
       "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API"
     ]
   },
   {
-    "title": "Blender: create the asset",
-    "lead": "Best for 3D artists and motion designers preparing a detailed model.",
-    "rows": [
-      [
-        "Build",
-        "Create the shape, materials and animation."
-      ],
-      [
-        "Prepare",
-        "Simplify heavy details and check scale and part names."
-      ],
-      [
-        "Deliver",
-        "Export GLB and review it in the website viewer."
-      ]
-    ],
-    "type": "split",
-    "image": "public/reference/jc400p-official-1.png",
-    "caption": "Example product reference",
-    "notes": "45 seconds. A mesh describes the shape. A material describes how its surface reacts to light. Blender lets an artist author these and animate parts. The browser normally loads an exported asset, not the Blender project. Some complex materials or simulations need baking into simpler textures or animation. Accurate reference images and measurements improve the result.",
+    "title": "Blender: production-ready assets",
+    "notes": "50 seconds. Blender owns the source asset. First match the silhouette and proportions. Then prepare materials and name parts that the developer will select or animate. Bake unsupported complex shading into textures where needed. Export a GLB and compare it in the target browser lighting. A normal map can suggest small surface detail but cannot change a silhouette. Keep both the editable source and the approved export. The image is a supplied product reference, not a claim of an exact reconstructed model.",
     "sources": [
-      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html"
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
+      "https://www.khronos.org/gltf/"
     ]
   },
   {
-    "title": "Three.js: build the interaction",
-    "lead": "Best for developers creating a custom 3D website experience.",
-    "rows": [
-      [
-        "Set the scene",
-        "Load the model, place the camera and add lighting."
-      ],
-      [
-        "Connect controls",
-        "Add rotate, pan, zoom, hotspots or material changes."
-      ],
-      [
-        "Draw the result",
-        "Render the scene when it changes or while it animates."
-      ]
-    ],
-    "notes": "45 seconds. Three.js is a JavaScript library. It supplies building blocks such as scenes, cameras, materials, loaders and controls. A developer combines them into a product viewer. It is useful when you need a specific look or behavior, but the team still builds loading states, accessibility and page integration.",
+    "title": "Three.js: the interaction loop",
+    "notes": "55 seconds. Consider a visitor clicking the lens. The page receives pointer input. A raycaster tests which scene object is under that pointer. The application updates the selected feature, moves the camera if needed and reveals an HTML explanation. The renderer draws the changed scene. OrbitControls handles common camera navigation and GLTFLoader loads the asset. The team writes the product-specific behavior. This is a proposed interaction example.",
     "sources": [
       "https://threejs.org/manual/pages/creating-a-scene.html",
+      "https://threejs.org/docs/pages/Raycaster.html",
       "https://threejs.org/docs/pages/GLTFLoader.html",
       "https://threejs.org/docs/pages/OrbitControls.html"
     ]
   },
   {
-    "title": "WebGL and WebGPU: draw the pixels",
-    "lead": "These browser APIs give rendering code access to the GPU.",
-    "rows": [
-      [
-        "WebGL",
-        "An established foundation for interactive browser graphics."
-      ],
-      [
-        "WebGPU",
-        "A newer API for rendering and GPU computation."
-      ],
-      [
-        "Practical choice",
-        "Use a supporting library or engine and test target devices."
-      ]
-    ],
-    "notes": "40 seconds. The GPU is the processor that performs graphics work. These APIs receive geometry and rendering instructions and produce the canvas image. Most product teams use them through a library rather than writing the entire renderer. WebGPU is not automatically faster and support varies. Three.js has a WebGPU renderer with a WebGL 2 fallback, subject to feature compatibility.",
+    "title": "WebGL and WebGPU",
+    "notes": "45 seconds. WebGL and WebGPU are browser APIs rather than modeling tools. WebGL is the established route for interactive graphics. WebGPU supports a more modern rendering and compute model, but availability and benefits depend on the workload and device. Most teams use them through an engine. Three.js WebGPURenderer can fall back to WebGL 2, but features and custom shaders still require compatibility review. Switching APIs does not repair a heavy asset or guarantee higher speed.",
     "sources": [
       "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API",
       "https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API",
@@ -141,140 +42,54 @@
     ]
   },
   {
-    "title": "Other tools worth knowing",
-    "lead": "Choose a starting point based on the project and the team.",
-    "headers": [
-      "Tool",
-      "Best starting point",
-      "How it reaches the site"
-    ],
-    "rows": [
-      [
-        "model-viewer",
-        "Simple product viewer",
-        "Add a web component and GLB"
-      ],
-      [
-        "Spline",
-        "Visual interactive design",
-        "Publish a viewer embed"
-      ],
-      [
-        "React Three Fiber",
-        "3D in a React app",
-        "Build Three.js scenes in React"
-      ],
-      [
-        "Babylon.js / PlayCanvas",
-        "Games and richer 3D apps",
-        "Integrate or host the engine app"
-      ]
-    ],
-    "notes": "55 seconds. These are recommendations, not a universal ranking. model-viewer provides a focused product-viewing component. Spline supports visual scene design and embeds. React Three Fiber expresses Three.js scenes as React components and still requires 3D knowledge. Babylon.js and PlayCanvas are useful for richer applications. Check the requirements, current export options and mobile behavior before choosing.",
+    "title": "Choosing the right tool",
+    "notes": "65 seconds. This table offers starting recommendations rather than a performance ranking. Choose model-viewer when the product page needs standard inspection. Spline suits visual scene exploration, with export constraints to check. Three.js offers detailed control but needs custom engineering. React Three Fiber is a way to author Three.js within an existing React app, not an alternative asset tool. Babylon.js or PlayCanvas merit a prototype for game-like apps or richer simulations. Match the choice to the hardest interaction and the maintainers.",
     "sources": [
-      "https://modelviewer.dev/",
+      "https://modelviewer.dev/docs/",
       "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://threejs.org/manual/pages/creating-a-scene.html",
       "https://r3f.docs.pmnd.rs/getting-started/introduction",
       "https://www.babylonjs.com/",
       "https://developer.playcanvas.com/user-manual/editor/"
     ]
   },
   {
-    "title": "Getting 3D onto a website",
-    "lead": "The same basic workflow applies to Webflow and custom websites.",
-    "rows": [
-      [
-        "01  Prepare",
-        "Create and approve a lightweight GLB asset."
-      ],
-      [
-        "02  Connect",
-        "Choose an embedded viewer or a custom Three.js scene."
-      ],
-      [
-        "03  Publish",
-        "Host the viewer and assets, then add them to the page."
-      ],
-      [
-        "04  Test",
-        "Check loading, touch controls and the published URL."
-      ]
-    ],
-    "notes": "45 seconds. A web component sits directly in the page. An iframe embeds a separately hosted viewer and is often convenient for a website builder. A direct JavaScript integration gives more control over page behavior. Use public HTTPS asset URLs for publishing. localhost is only a preview on your own computer.",
+    "title": "Designing motion that can be interrupted",
+    "notes": "50 seconds. A timeline describes a planned sequence, but a visitor can drag, reverse scroll or leave midway. The motion handoff must define what happens after interruption. This example uses an open-cover clip authored in Blender and played in the browser. The table is an interaction specification, not a implemented product feature. Three.js AnimationMixer plays animation clips. Ensure essential information remains available with reduced motion.",
     "sources": [
-      "https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed",
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
+      "https://threejs.org/docs/pages/AnimationMixer.html"
+    ]
+  },
+  {
+    "title": "Three ways to put it on a page",
+    "notes": "50 seconds. A component such as model-viewer or Spline Viewer lives inside the page and offers its own API. An iframe embeds a complete separately hosted viewer, convenient for reuse but more isolated from the host page. Direct JavaScript integration places the scene in the app and provides closer access to page state, at the cost of lifecycle and resize code. Webflow can use custom embeds. All routes need correct public asset URLs and testing on the published page.",
+    "sources": [
       "https://modelviewer.dev/docs/",
+      "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer",
+      "https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed"
+    ]
+  },
+  {
+    "title": "Performance: diagnose the bottleneck",
+    "notes": "50 seconds. A small download can still be expensive to draw. Diagnose the stage that is slow. Network problems suggest reducing transfer size or delaying loading. CPU work includes parsing, decoding and scene updates. GPU cost grows with pixels, materials, shadows and effects. Measure on a representative phone. If aiming for 60 frames per second, each frame has roughly 16.7 milliseconds; that is a target calculation, not a performance claim about this viewer. Keep a poster fallback and HTML descriptions.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices"
+    ]
+  },
+  {
+    "title": "The handoff that prevents rework",
+    "notes": "45 seconds. The workflow is strongest when each discipline hands over something concrete. Designers specify states rather than only a screenshot. Motion designers specify clip names and interruption rules. Artists provide an approved export with named parts and scale. Developers integrate and test devices, errors and fallback behavior. Review together in the browser because the exported result may look different from the authoring application. This is a recommended workflow.",
+    "sources": [
+      "https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html",
       "https://threejs.org/docs/pages/GLTFLoader.html"
     ]
   },
   {
-    "title": "Who does what",
-    "lead": "A shared handoff connects the visual idea to the working website.",
-    "rows": [
-      [
-        "Designer",
-        "Defines layout, controls and the first view."
-      ],
-      [
-        "Motion designer",
-        "Specifies timing, transitions and interruption behavior."
-      ],
-      [
-        "3D artist",
-        "Delivers the model, materials and animation clips."
-      ],
-      [
-        "Developer",
-        "Builds interaction, loading states and deployment."
-      ]
-    ],
-    "notes": "35 seconds. Agree on the initial camera angle and interaction before building the whole scene. Artists provide named parts and approved exports. Motion designers explain what happens when a visitor interrupts a transition. Developers test the resulting experience. Review the asset together inside the real browser.",
-    "sources": []
-  },
-  {
-    "title": "What makes the result good",
-    "lead": "Visual quality and usability need attention together.",
-    "rows": [
-      [
-        "Accuracy",
-        "Match the product’s shape before adding visual effects."
-      ],
-      [
-        "Performance",
-        "Optimize assets and measure on real phones."
-      ],
-      [
-        "Accessibility",
-        "Provide clear controls, reduced motion and a static fallback."
-      ]
-    ],
-    "notes": "40 seconds. Lighting cannot fix inaccurate geometry. Reduce expensive geometry, textures and effects based on measured performance rather than an arbitrary polygon limit. Keep product information in HTML, offer a reset view, preserve normal page scrolling and provide a useful image if 3D fails to load.",
+    "title": "The recommended first release",
+    "notes": "35 seconds. A good first release has one accurate asset and a useful interaction. For a simple product page, a viewer component may be sufficient. For custom behavior, use a deliberate asset workflow and Three.js. If the team is exploring a visual concept, prototype in Spline before committing to implementation. Keep a poster fallback, readable content and basic controls. These are recommendations derived from the tools’ documented capabilities. Total suggested narration time is approximately eight and a half minutes.",
     "sources": [
-      "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices",
-      "https://modelviewer.dev/docs/"
-    ]
-  },
-  {
-    "title": "A simple starting point",
-    "lead": "One model and one useful interaction are enough for a first version.",
-    "rows": [
-      [
-        "Simple product display",
-        "Start with model-viewer."
-      ],
-      [
-        "Custom experience",
-        "Use Blender assets with Three.js."
-      ],
-      [
-        "Visual exploration",
-        "Try Spline, then test the published result."
-      ]
-    ],
-    "dark": true,
-    "notes": "30 seconds. The main takeaway: Blender creates the asset, a viewer or engine manages the experience, and a browser graphics API draws it. Choose the simplest approach that supports the visitor’s task. These recommendations are based on the documented capabilities, not performance benchmarks. Sources throughout the deck are in the speaker notes.",
-    "sources": [
-      "https://modelviewer.dev/",
+      "https://modelviewer.dev/docs/",
       "https://threejs.org/manual/pages/creating-a-scene.html",
       "https://docs.spline.design/exporting-your-scene/web/exporting-as-spline-viewer"
     ]
