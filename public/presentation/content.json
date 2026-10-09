@@ -721,7 +721,7 @@
     ]
   },
   {
-    "title": "Your LightMetrics camera viewer",
+    "title": "Example: a camera viewer",
     "lead": "Recommended route: keep Three.js and refine the source asset.",
     "rows": [
       [
@@ -734,14 +734,14 @@
       ],
       [
         "Web improvement",
-        "Keep rotate, pan, zoom and reset controls in the LightMetrics theme."
+        "Keep rotate, pan, zoom and reset controls with a simple interface."
       ]
     ],
-    "notes": "Local source reviewed: src/main.js imports createCameraModel from model.js, constructs the scene and uses OrbitControls. It imports GLTFExporter for download. This deck does not claim the current model was authored in Blender or exactly matches the product. Proposed next phase: approve the refined GLB in the existing viewer before replacing production assets. Screenshot is the project’s saved initial-view capture.",
+    "notes": "Local source reviewed: src/main.js imports createCameraModel from model.js, constructs the scene and uses OrbitControls. It imports GLTFExporter for download. This deck does not claim the current model was authored in Blender or exactly matches the product. Proposed next phase: approve the refined GLB in the existing viewer before replacing production assets. The image shows a camera product reference.",
     "sources": [],
     "type": "split",
-    "image": "artifacts/initial-view.jpg",
-    "caption": "Existing project capture, not a new implementation"
+    "image": "public/reference/jc400p-official-2.png",
+    "caption": "Camera product example"
   },
   {
     "title": "A practical learning path",
@@ -883,7 +883,7 @@
     "lead": "One approved model. One useful interaction. One tested website.",
     "rows": [
       [
-        "For LightMetrics",
+        "For a camera viewer",
         "Refine the camera asset, then keep the existing Three.js viewer."
       ],
       [
